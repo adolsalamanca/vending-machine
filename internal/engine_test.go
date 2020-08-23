@@ -58,7 +58,12 @@ var _ = Describe("CashEngine test", func() {
 			value, _ := v.Float64()
 
 			currentStoredValue := storedValue + value
-			Expect(engine.GetBalance().Float64()).To(BeEquivalentTo(currentStoredValue))
+			balance, err := engine.GetBalance()
+
+			Expect(err).To(BeNil())
+			b, _ := balance.Float64()
+
+			Expect(b).To(BeEquivalentTo(currentStoredValue))
 		})
 
 	})
