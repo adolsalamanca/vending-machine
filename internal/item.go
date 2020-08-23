@@ -2,7 +2,10 @@ package internal
 
 import (
 	"github.com/shopspring/decimal"
+	"strings"
 )
+
+const NotFoundItemErr = Error("Item not found")
 
 type Item struct {
 	selector int
@@ -18,21 +21,21 @@ func NewItem(n string, p float64, s int) Item {
 	}
 }
 
-type ItemRepository struct {
+type ItemCatalogue struct {
 	Items []Item
 }
 
-func NewItemRepository() *ItemRepository {
-	return &ItemRepository{
+func NewItemCatalogue() *ItemCatalogue {
+	return &ItemCatalogue{
 		Items: nil,
 	}
 }
 
-func (r *ItemRepository) AddItem(i Item) {
+func (r *ItemCatalogue) AddItem(i Item) {
 	r.Items = append(r.Items, i)
 }
 
-func (r *ItemRepository) RemoveItem(item Item) {
+func (r *ItemCatalogue) RemoveItem(item Item) {
 	for i, rItem := range r.Items {
 		if rItem.name == item.name {
 			r.Items = append(r.Items[:i], r.Items[i+1:]...)
@@ -41,6 +44,16 @@ func (r *ItemRepository) RemoveItem(item Item) {
 	}
 }
 
-func (r *ItemRepository) GetItemsAmount() int {
+func (r *ItemCatalogue) GetCatalogItemsAmount() int {
 	return len(r.Items)
+}
+
+func (r *ItemCatalogue) GetItemByName(name string) (Item, error) {
+	for _, i := range r.Items {
+		if strings.EqualFold(name, i.name) {
+			return i, nil
+		}
+	}
+
+	return Item{}, NotFoundItemErr
 }

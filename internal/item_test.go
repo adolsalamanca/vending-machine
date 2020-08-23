@@ -6,39 +6,47 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("ItemRepository test", func() {
+var _ = Describe("Item test", func() {
 
 	var item1, item2, item3 internal.Item
-	var repository *internal.ItemRepository
+	var catalogue *internal.ItemCatalogue
 
 	BeforeEach(func() {
 		item1 = internal.NewItem("Water", 0.65, 1)
 		item2 = internal.NewItem("Juice", 1.00, 2)
 		item3 = internal.NewItem("Soda", 1.50, 3)
 
-		repository = internal.NewItemRepository()
+		catalogue = internal.NewItemCatalogue()
 
-		repository.AddItem(item1)
-		repository.AddItem(item2)
+		catalogue.AddItem(item1)
+		catalogue.AddItem(item2)
 	})
 
-	When("add an item", func() {
+	Context("Catalogue test", func() {
 
-		It("should contain also the added item", func() {
-			repository.AddItem(item3)
+		When("add an item", func() {
 
-			Expect(repository.GetItemsAmount()).To(BeEquivalentTo(3))
+			It("should contain also the added item", func() {
+				catalogue.AddItem(item3)
+
+				Expect(catalogue.GetCatalogItemsAmount()).To(BeEquivalentTo(3))
+			})
+
+		})
+
+		When("remove an item", func() {
+
+			It("should only contain not removed item", func() {
+				catalogue.RemoveItem(item2)
+
+				Expect(catalogue.GetCatalogItemsAmount()).To(BeEquivalentTo(1))
+			})
+
 		})
 
 	})
 
-	When("remove an item", func() {
-
-		It("should only contain not removed item", func() {
-			repository.RemoveItem(item2)
-
-			Expect(repository.GetItemsAmount()).To(BeEquivalentTo(1))
-		})
+	Context("Stock test", func() {
 
 	})
 
