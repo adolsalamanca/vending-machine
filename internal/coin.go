@@ -3,6 +3,7 @@ package internal
 import "github.com/shopspring/decimal"
 
 const (
+	NotValidCoin   = Error("Not valid coin inserted")
 	FiveCent       = "0.05"
 	TenCent        = "0.10"
 	TwentyFiveCent = "0.25"
@@ -18,7 +19,7 @@ type Coin struct {
 func NewCoin(t string) (Coin, error) {
 	d, err := decimal.NewFromString(t)
 	if err != nil {
-		return Coin{}, err
+		return Coin{}, NotValidCoin
 	}
 	return Coin{
 		category: t,
