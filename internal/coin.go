@@ -7,6 +7,7 @@ const (
 	TenCent        = "0.10"
 	TwentyFiveCent = "0.25"
 	OneUnit        = "1.00"
+	TwoUnit        = "2.00"
 )
 
 type Coin struct {
@@ -23,4 +24,8 @@ func NewCoin(t string) (Coin, error) {
 		category: t,
 		value:    d,
 	}, nil
+}
+
+func (c *Coin) Value() decimal.Decimal {
+	return c.value
 }
