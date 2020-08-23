@@ -5,14 +5,16 @@ import (
 )
 
 type Item struct {
-	Name  string
-	Price decimal.Decimal
+	name     string
+	price    decimal.Decimal
+	selector int
 }
 
-func NewItem(n string, p float64) Item {
+func NewItem(n string, p float64, s int) Item {
 	return Item{
-		Name:  n,
-		Price: decimal.NewFromFloat(p),
+		name:     n,
+		price:    decimal.NewFromFloat(p),
+		selector: s,
 	}
 }
 
@@ -32,7 +34,7 @@ func (r *ItemRepository) AddItem(i Item) {
 
 func (r *ItemRepository) RemoveItem(item Item) {
 	for i, rItem := range r.Items {
-		if rItem.Name == item.Name {
+		if rItem.name == item.name {
 			r.Items = append(r.Items[:i], r.Items[i+1:]...)
 			break
 		}

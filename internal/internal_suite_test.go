@@ -5,9 +5,12 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"github.com/MetalBlueberry/golandreporter"
 )
 
 func TestInternal(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Internal Suite")
+	golandReporter := golandreporter.NewGolandReporter()
+	RunSpecsWithDefaultAndCustomReporters(t, "Internal Suite", []Reporter{golandReporter})
 }
