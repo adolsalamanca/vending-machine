@@ -5,16 +5,16 @@ import (
 )
 
 type Item struct {
+	selector int
 	name     string
 	price    decimal.Decimal
-	selector int
 }
 
 func NewItem(n string, p float64, s int) Item {
 	return Item{
+		selector: s,
 		name:     n,
 		price:    decimal.NewFromFloat(p),
-		selector: s,
 	}
 }
 
