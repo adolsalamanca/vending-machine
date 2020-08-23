@@ -12,9 +12,9 @@ var _ = Describe("ItemRepository test", func() {
 	var repository *internal.ItemRepository
 
 	BeforeEach(func() {
-		item1 = internal.NewItem("Water", 0.65)
-		item2 = internal.NewItem("Juice", 1.00)
-		item3 = internal.NewItem("Soda", 1.50)
+		item1 = internal.NewItem("Water", 0.65, 1)
+		item2 = internal.NewItem("Juice", 1.00, 2)
+		item3 = internal.NewItem("Soda", 1.50, 3)
 
 		repository = internal.NewItemRepository()
 
