@@ -27,13 +27,18 @@ func NewItemRepository() *ItemRepository {
 }
 
 func (r *ItemRepository) AddItem(i Item) {
-
+	r.Items = append(r.Items, i)
 }
 
-func (r *ItemRepository) RemoveItem(i Item) {
-
+func (r *ItemRepository) RemoveItem(item Item) {
+	for i, rItem := range r.Items {
+		if rItem.Name == item.Name {
+			r.Items = append(r.Items[:i], r.Items[i+1:]...)
+			break
+		}
+	}
 }
 
-func (r *ItemRepository) GetItemsNumber() int {
+func (r *ItemRepository) GetItemsAmount() int {
 	return len(r.Items)
 }

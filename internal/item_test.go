@@ -22,22 +22,22 @@ var _ = Describe("ItemRepository test", func() {
 		repository.AddItem(item2)
 	})
 
-	When("added some items", func() {
+	When("add an item", func() {
 
-		It("should contain all the added items", func() {
+		It("should contain also the added item", func() {
 			repository.AddItem(item3)
 
-			Expect(repository.GetItemsNumber()).To(BeEquivalentTo(3))
+			Expect(repository.GetItemsAmount()).To(BeEquivalentTo(3))
 		})
 
 	})
 
-	When("removed some items", func() {
+	When("remove an item", func() {
 
-		It("should contain all the added items", func() {
+		It("should only contain not removed item", func() {
 			repository.RemoveItem(item2)
 
-			Expect(repository.GetItemsNumber()).To(BeEquivalentTo(1))
+			Expect(repository.GetItemsAmount()).To(BeEquivalentTo(1))
 		})
 
 	})
