@@ -24,7 +24,7 @@ type Item struct {
 	price    decimal.Decimal
 }
 
-// Assumes price will be valid, thats why there is not error returned
+// NewItem instantiates a new item, it assumes price will be valid, so there is a log.Fatalf instead of error returned
 func NewItem(n string, p string, s int) Item {
 	price, err := decimal.NewFromString(p)
 	if err != nil {
@@ -41,16 +41,19 @@ type ItemCatalogue struct {
 	Items []Item
 }
 
+// NewItemCatalogue creates a Catalogue of items, which is an Array with some extended behavior
 func NewItemCatalogue() *ItemCatalogue {
 	return &ItemCatalogue{
 		Items: nil,
 	}
 }
 
+// AddItem inserts an item in the catalog
 func (r *ItemCatalogue) AddItem(i Item) {
 	r.Items = append(r.Items, i)
 }
 
+// RemoveItem removes an item from the catalog
 func (r *ItemCatalogue) RemoveItem(item Item) {
 	for i, rItem := range r.Items {
 		if rItem.name == item.name {
@@ -60,10 +63,12 @@ func (r *ItemCatalogue) RemoveItem(item Item) {
 	}
 }
 
+// GetCatalogItemsAmount returns the total items in the current catalog
 func (r *ItemCatalogue) GetCatalogItemsAmount() int {
 	return len(r.Items)
 }
 
+// GetItemByName retrieves the Item instance that matches with the specified name ignoring case
 func (r *ItemCatalogue) GetItemByName(name string) (Item, error) {
 	for _, i := range r.Items {
 		if strings.EqualFold(name, i.name) {

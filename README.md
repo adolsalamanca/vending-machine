@@ -19,6 +19,8 @@ It should have at least have 3 primary items that cost 0.65, 1.00, and 1.50. Als
  | Buy Item                     |  Get-Soda             |
  | Service/Reload stock&items   |  Service items        |
 
+ 
+
 ## Real examples 
 ```
 Example 1: Buy Soda with exact change
@@ -47,6 +49,7 @@ I have no problem with standard go testing but as you can see, I have used Ginkg
 
 The proposed solution uses original kata specifications in terms of products (Water,Juice and Soda) and also regarding accepted coins (0.05, 0.10, 0.25 and 1) but it is prepared to easily add new items or more coin types in initializeMachine function.
 Most of the problem has been developed using TDD, making red, green, refactor cycles.
+For the shake of simplicity, the Service action has been developed using a default amount of Items and Coins to be added every time the operation is applied.
 
 
 ## Tests
@@ -60,22 +63,50 @@ Most of the problem has been developed using TDD, making red, green, refactor cy
 ## How to run tests
 
 Just decompress the file into the desired folder, enter the root folder of the project (where go.mod file is), and run this command in your terminal:
-``
+
+```
 go test ./...
-``
+```
 
 ## Build & Run the simulation
 
 Again, from the root folder of the project and run the following command in your terminal:
-``
-go run cmd/vending-machine/main.go
-``
 
-You will see all the reports of Drones visiting around Stations and also a Shutdown message.
+```
+go run cmd/vending-machine/main.go
+```
+
+You can play with the machine following the previously explained instructions
+
+## Run the application inside a Docker container
+
+As you can see in the root of the repository, there is a multi-stage Dockerfile to build and run the application inside a container.
+However, as this is a local application and not an exposed server, the steps to run it are quite manual
+
+```
+docker build --tag vending-machine .
+```
+
+Then you will see all the details of containers creation, app build, test and install. 
+Afterwards, a message like this will appear:
+ 
+**Successfully built 1a2b34c567d8**
+
+Then you can access the container's shell with this command
+```
+docker run -it vending-machine /bin/sh
+```
+And finally, run application inside
+```
+./vending-machine 
+```
+
+
 
 ## Additional info
 
-You can follow the different phases of build&test of the application development [here](https://github.com/adolsalamanca/vending-machine/actions)
+You can follow the evolution and phases of build&test of the application development [here](https://github.com/adolsalamanca/vending-machine/actions)
+
 
 ## Author
 

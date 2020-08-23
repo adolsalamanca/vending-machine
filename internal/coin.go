@@ -16,6 +16,7 @@ type Coin struct {
 	value    decimal.Decimal
 }
 
+// NewCoin instantiates a coin given a string
 func NewCoin(t string) (Coin, error) {
 	d, err := decimal.NewFromString(t)
 	if err != nil {
