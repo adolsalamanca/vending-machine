@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/adolsalamanca/vending-machine/workflows/Go/badge.svg)](https://github.com/adolsalamanca/vending-machine/actions)
+
 ## Vending Machine Coding Kata
 
 The goal of this program is to model a vending machine and the state it must maintain during its operation.
@@ -10,7 +12,7 @@ It should have at least have 3 primary items that cost 0.65, 1.00, and 1.50. Als
 
 ### Valid set of actions on the vending machine are:
 
-* Inser Money  -  0.05, 0.10, 0.25, 1
+* Insert Money  -  0.05, 0.10, 0.25, 1
 * Return Coins -  returns all inserted money
 * GET Item     -  GET Water, GET Juice, GET Soda - order item (Water = 0.65, Juice = 1.00, Soda = 1.50)
 * SERVICE      -  a service person opens the machine and set the available change and how many items we have.
