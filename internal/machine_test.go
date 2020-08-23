@@ -89,19 +89,6 @@ var _ = Describe("Machine test", func() {
 			machine.LoadItem(soda, 5)
 		})
 
-		FIt("reproduce issue", func() {
-			err := machine.InsertCoins(internal.OneUnit, internal.TwentyFiveCent, internal.TwentyFiveCent)
-			Expect(err).To(BeNil())
-			err = machine.SellItem(internal.Soda)
-
-			buf.Reset()
-
-			err = machine.InsertCoins(internal.OneUnit, internal.TwentyFiveCent, internal.TwentyFiveCent)
-			Expect(err).To(BeNil())
-			err = machine.SellItem(internal.Soda)
-
-		})
-
 		It("should print expected response after non exact change sold item", func() {
 			expectedPrint := `-> WATER, 0.25, 0.1
 `
