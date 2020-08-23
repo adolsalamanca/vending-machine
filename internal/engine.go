@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	NotValidCoin        = Error("Not valid coin inserted")
+	NotValidCoinAmount  = Error("Not valid amount coin inserted")
 	NotEnoughCoinsErr   = Error("Not enough coins, please insert more")
 	NotValidExchangeErr = Error("It is not possible to return exchange, please try with exact amount of coins")
 )
@@ -45,7 +45,7 @@ func NewCashEngine(validCoins ...string) *CashEngine {
 func (e *CashEngine) InsertCoins(coins ...Coin) error {
 	for _, c := range coins {
 		if IsNotValid(c, e.validCoins) {
-			return NotValidCoin
+			return NotValidCoinAmount
 		}
 
 		e.currentServiceCash = append(e.currentServiceCash, c)
@@ -93,17 +93,12 @@ func (e *CashEngine) GetBalance() (decimal.Decimal, error) {
 	return balance, nil
 }
 
-func (e *CashEngine) GetPaid(price decimal.Decimal) ([]Coin, error) {
+func (e *CashEngine) SellItem(price decimal.Decimal) ([]Coin, error) {
 	if price.GreaterThan(e.currentServiceBalance) {
 		return []Coin{}, NotEnoughCoinsErr
 	}
 
 	difference := e.currentServiceBalance.Sub(price)
-
-	return e.GiveExchange(difference)
-}
-
-func (e *CashEngine) GiveExchange(difference decimal.Decimal) ([]Coin, error) {
 	var exchange []Coin
 	for _, currentCoin := range e.validCoins {
 		validCoinValue, err := decimal.NewFromString(currentCoin)
@@ -160,4 +155,5 @@ func (e *CashEngine) GiveExchange(difference decimal.Decimal) ([]Coin, error) {
 	}
 
 	return []Coin{}, NotValidExchangeErr
+
 }

@@ -56,7 +56,7 @@ var _ = Describe("CashEngine test", func() {
 
 			err = engine.InsertCoins(invalidCoin)
 
-			Expect(err).To(BeEquivalentTo(internal.NotValidCoin))
+			Expect(err).To(BeEquivalentTo(internal.NotValidCoinAmount))
 		})
 
 		It("should increase storedBalance inside the engine", func() {
@@ -78,19 +78,22 @@ var _ = Describe("CashEngine test", func() {
 	})
 
 	When("getting paid", func() {
+		var insertCoinErr error
+
 		It("should return err if not enough money was inserted", func() {
 			sodaPrice := decimal.NewFromFloat(1.50)
-			engine.InsertCoins(oneUnitCoin)
+			insertCoinErr = engine.InsertCoins(oneUnitCoin)
 
-			_, err := engine.GetPaid(sodaPrice)
+			_, err := engine.SellItem(sodaPrice)
 
 			Expect(err).To(BeEquivalentTo(internal.NotEnoughCoinsErr))
 		})
 
-		It("should return err if all allowed coins are bigger than exchange difference", func() {
+		It("should return err if all stored coins are bigger than exchange difference", func() {
 			engine = internal.NewCashEngine(internal.OneUnit)
+			insertCoinErr = engine.InsertCoins(oneUnitCoin)
 
-			_, err := engine.GiveExchange(decimal.NewFromFloat(0.50))
+			_, err := engine.SellItem(decimal.NewFromFloat(0.50))
 
 			Expect(err).To(BeEquivalentTo(internal.NotValidExchangeErr))
 		})
@@ -100,9 +103,9 @@ var _ = Describe("CashEngine test", func() {
 			engine.StoreCoins(twentyFiveCentCoin, tenCentCoin, fiveCentCoin, fiveCentCoin)
 
 			sodaPrice := decimal.NewFromFloat(1.50)
-			engine.InsertCoins(oneUnitCoin, oneUnitCoin)
+			insertCoinErr = engine.InsertCoins(oneUnitCoin, oneUnitCoin)
 
-			_, err := engine.GetPaid(sodaPrice)
+			_, err := engine.SellItem(sodaPrice)
 
 			Expect(err).To(BeEquivalentTo(internal.NotValidExchangeErr))
 		})
@@ -112,9 +115,9 @@ var _ = Describe("CashEngine test", func() {
 			engine.StoreCoins(twentyFiveCentCoin, twentyFiveCentCoin)
 
 			sodaPrice := decimal.NewFromFloat(1.50)
-			engine.InsertCoins(oneUnitCoin, oneUnitCoin)
+			insertCoinErr = engine.InsertCoins(oneUnitCoin, oneUnitCoin)
 
-			coins, err := engine.GetPaid(sodaPrice)
+			coins, err := engine.SellItem(sodaPrice)
 
 			Expect(err).To(BeNil())
 			Expect(len(coins)).To(BeEquivalentTo(2))
@@ -126,9 +129,9 @@ var _ = Describe("CashEngine test", func() {
 			engine.StoreCoins(twentyFiveCentCoin, tenCentCoin, tenCentCoin, fiveCentCoin)
 
 			sodaPrice := decimal.NewFromFloat(1.50)
-			engine.InsertCoins(oneUnitCoin, oneUnitCoin)
+			insertCoinErr = engine.InsertCoins(oneUnitCoin, oneUnitCoin)
 
-			coins, err := engine.GetPaid(sodaPrice)
+			coins, err := engine.SellItem(sodaPrice)
 
 			Expect(err).To(BeNil())
 			Expect(len(coins)).To(BeEquivalentTo(4))
@@ -139,9 +142,9 @@ var _ = Describe("CashEngine test", func() {
 			engine.StoreCoins(twentyFiveCentCoin, fiveCentCoin, fiveCentCoin, fiveCentCoin, fiveCentCoin, fiveCentCoin, fiveCentCoin)
 
 			sodaPrice := decimal.NewFromFloat(1.50)
-			engine.InsertCoins(oneUnitCoin, oneUnitCoin)
+			insertCoinErr = engine.InsertCoins(oneUnitCoin, oneUnitCoin)
 
-			coins, err := engine.GetPaid(sodaPrice)
+			coins, err := engine.SellItem(sodaPrice)
 
 			Expect(err).To(BeNil())
 			Expect(len(coins)).To(BeEquivalentTo(6))
@@ -152,14 +155,17 @@ var _ = Describe("CashEngine test", func() {
 			engine.StoreCoins(twentyFiveCentCoin, tenCentCoin, fiveCentCoin, fiveCentCoin, fiveCentCoin)
 
 			sodaPrice := decimal.NewFromFloat(1.50)
-			engine.InsertCoins(oneUnitCoin, oneUnitCoin)
+			insertCoinErr = engine.InsertCoins(oneUnitCoin, oneUnitCoin)
 
-			coins, err := engine.GetPaid(sodaPrice)
+			coins, err := engine.SellItem(sodaPrice)
 
 			Expect(err).To(BeNil())
 			Expect(len(coins)).To(BeEquivalentTo(5))
 		})
 
+		JustAfterEach(func() {
+			Expect(insertCoinErr).To(BeNil())
+		})
 	})
 
 })

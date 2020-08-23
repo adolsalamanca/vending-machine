@@ -24,7 +24,7 @@ var _ = Describe("Coin test", func() {
 
 			_, err := internal.NewCoin(invalidValue)
 
-			Expect(err).ToNot(BeNil())
+			Expect(err).To(BeEquivalentTo(internal.NotValidCoin))
 		})
 	})
 
