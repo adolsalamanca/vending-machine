@@ -59,22 +59,6 @@ var _ = Describe("CashEngine test", func() {
 			Expect(err).To(BeEquivalentTo(internal.NotValidCoinAmount))
 		})
 
-		It("should increase storedBalance inside the engine", func() {
-			engine.StoreCoins(oneUnitCoin)
-
-			v, err := decimal.NewFromString(internal.OneUnit)
-			Expect(err).To(BeNil())
-			value, _ := v.Float64()
-
-			currentStoredValue := storedValue + value
-			balance, err := engine.GetBalance()
-
-			Expect(err).To(BeNil())
-			b, _ := balance.Float64()
-
-			Expect(b).To(BeEquivalentTo(currentStoredValue))
-		})
-
 	})
 
 	When("getting paid", func() {

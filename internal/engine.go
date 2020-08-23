@@ -19,7 +19,6 @@ func (e Error) Error() string {
 
 type CashEngine struct {
 	storedCashDetailed    map[string]int
-	storedBalance         decimal.Decimal
 	currentServiceCash    []Coin
 	currentServiceBalance decimal.Decimal
 	validCoins            []string
@@ -35,16 +34,17 @@ func NewCashEngine(validCoins ...string) *CashEngine {
 
 	return &CashEngine{
 		storedCashDetailed:    storedCashDetailed,
-		storedBalance:         decimal.Decimal{},
 		currentServiceCash:    nil,
 		currentServiceBalance: decimal.Decimal{},
 		validCoins:            validCoins,
 	}
 }
 
+// InsertCoins is used to load money in the machine for next buy. It allows user to insert any coin,
+// but it could cause if it was not registered as a valid coin
 func (e *CashEngine) InsertCoins(coins ...Coin) error {
 	for _, c := range coins {
-		if IsNotValid(c, e.validCoins) {
+		if isNotValid(c, e.validCoins) {
 			return NotValidCoinAmount
 		}
 
@@ -55,7 +55,7 @@ func (e *CashEngine) InsertCoins(coins ...Coin) error {
 	return nil
 }
 
-func IsNotValid(c Coin, validCoins []string) bool {
+func isNotValid(c Coin, validCoins []string) bool {
 	for _, coin := range validCoins {
 		if coin == c.category {
 			return false
@@ -72,25 +72,11 @@ func (e *CashEngine) DropCoins() []Coin {
 	return serviceCoins
 }
 
+// StoreCoins method is used to fill the machine with coins to let the vending machine have money to give exchange back
 func (e *CashEngine) StoreCoins(coins ...Coin) {
 	for _, c := range coins {
 		e.storedCashDetailed[c.category] += 1
-		e.storedBalance = e.storedBalance.Add(c.value)
 	}
-}
-
-func (e *CashEngine) GetBalance() (decimal.Decimal, error) {
-	balance := decimal.Zero
-	for k, v := range e.storedCashDetailed {
-		coinsValue, err := decimal.NewFromString(k)
-		if err != nil {
-			return decimal.Decimal{}, err
-		}
-		balance = balance.Add(coinsValue.Mul(decimal.NewFromInt(int64(v))))
-	}
-	e.storedBalance = balance
-
-	return balance, nil
 }
 
 func (e *CashEngine) SellItem(price decimal.Decimal) ([]Coin, error) {
