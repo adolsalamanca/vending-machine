@@ -17,7 +17,7 @@ It should have at least have 3 primary items that cost 0.65, 1.00, and 1.50. Als
  | Insert Coins                 |  0.05, 0.10, 0.25, 1  |
  | Return Coins                 |  Return-coin          |
  | Buy Item                     |  Get-Soda             |
- | Service/Reload stock&items   |  Service items        |
+ | Service/Reload stock&items   |  Service              |
 
  
 
