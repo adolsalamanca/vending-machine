@@ -3,6 +3,7 @@ package internal
 import (
 	"github.com/shopspring/decimal"
 	"sort"
+	"strconv"
 )
 
 const (
@@ -42,14 +43,17 @@ func NewCashEngine(validCoins ...string) *CashEngine {
 
 // InsertCoins is used to load money in the machine for next buy. It allows user to insert any coin,
 // but it could cause if it was not registered as a valid coin
-func (e *CashEngine) InsertCoins(coins ...Coin) error {
+func (e *CashEngine) InsertCoins(coins ...string) error {
 	for _, c := range coins {
-		if isNotValid(c, e.validCoins) {
+		newCoin, err := NewCoin(c)
+		if err != nil {
+			return err
+		}
+		if isNotValid(newCoin, e.validCoins) {
 			return NotValidCoinAmount
 		}
-
-		e.currentServiceCash = append(e.currentServiceCash, c)
-		e.currentServiceBalance = e.currentServiceBalance.Add(c.value)
+		e.currentServiceCash = append(e.currentServiceCash, newCoin)
+		e.currentServiceBalance = e.currentServiceBalance.Add(newCoin.value)
 	}
 
 	return nil
@@ -57,7 +61,11 @@ func (e *CashEngine) InsertCoins(coins ...Coin) error {
 
 func isNotValid(c Coin, validCoins []string) bool {
 	for _, coin := range validCoins {
-		if coin == c.category {
+		coinFloat, err := strconv.ParseFloat(coin, 64)
+		if err != nil {
+			return false
+		}
+		if c.value.Equal(decimal.NewFromFloat(coinFloat)) {
 			return false
 		}
 	}
@@ -109,6 +117,8 @@ func (e *CashEngine) SellItem(price decimal.Decimal) ([]Coin, error) {
 					e.storedCashDetailed[currentCoin]--
 				}
 
+				e.currentServiceBalance = decimal.Zero
+				e.currentServiceCash = nil
 				return exchange, nil
 			}
 
@@ -133,10 +143,11 @@ func (e *CashEngine) SellItem(price decimal.Decimal) ([]Coin, error) {
 				e.storedCashDetailed[currentCoin]--
 			}
 		}
-
 	}
 
 	if difference.Equal(decimal.Zero) {
+		e.currentServiceBalance = decimal.Zero
+		e.currentServiceCash = nil
 		return exchange, nil
 	}
 

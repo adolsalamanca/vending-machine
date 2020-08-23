@@ -2,10 +2,21 @@ package internal
 
 import (
 	"github.com/shopspring/decimal"
+	"log"
 	"strings"
 )
 
-const NotFoundItemErr = Error("Item not found")
+const (
+	Water = "Water"
+	Juice = "Juice"
+	Soda  = "Soda"
+
+	WaterPrice = "0.65"
+	JuicePrice = "1.00"
+	SodaPrice  = "1.50"
+
+	NotFoundItemErr = Error("Item not found")
+)
 
 type Item struct {
 	selector int
@@ -13,11 +24,16 @@ type Item struct {
 	price    decimal.Decimal
 }
 
-func NewItem(n string, p float64, s int) Item {
+// Assumes price will be valid, thats why there is not error returned
+func NewItem(n string, p string, s int) Item {
+	price, err := decimal.NewFromString(p)
+	if err != nil {
+		log.Fatalf("Could not create new items")
+	}
 	return Item{
 		selector: s,
 		name:     n,
-		price:    decimal.NewFromFloat(p),
+		price:    price,
 	}
 }
 

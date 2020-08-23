@@ -6,21 +6,15 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-const (
-	WATER = "Water"
-	JUICE = "Juice"
-	SODA  = "Soda"
-)
-
 var _ = Describe("Item test", func() {
 
 	var item1, item2, item3 internal.Item
 	var catalogue *internal.ItemCatalogue
 
 	BeforeEach(func() {
-		item1 = internal.NewItem(WATER, 0.65, 1)
-		item2 = internal.NewItem(JUICE, 1.00, 2)
-		item3 = internal.NewItem(SODA, 1.50, 3)
+		item1 = internal.NewItem(internal.Water, internal.WaterPrice, 1)
+		item2 = internal.NewItem(internal.Juice, internal.JuicePrice, 2)
+		item3 = internal.NewItem(internal.Soda, internal.SodaPrice, 3)
 
 		catalogue = internal.NewItemCatalogue()
 
