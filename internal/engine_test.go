@@ -30,7 +30,7 @@ var _ = Describe("CashEngine test", func() {
 		oneUnitCoin, err = internal.NewCoin(internal.OneUnit)
 		Expect(err).To(BeNil())
 
-		engine = internal.NewCashEngine()
+		engine = internal.NewCashEngine(internal.OneUnit, internal.TwentyFiveCent, internal.TenCent, internal.FiveCent)
 		engine.StoreCoins(fiveCentCoin, tenCentCoin, twentyFiveCentCoin, oneUnitCoin)
 
 	})
@@ -49,6 +49,15 @@ var _ = Describe("CashEngine test", func() {
 	})
 
 	When("store some coins", func() {
+
+		It("should return error if attempted to insert not valid coin", func() {
+			invalidCoin, err := internal.NewCoin(internal.TwoUnit)
+			Expect(err).To(BeNil())
+
+			err = engine.InsertCoins(invalidCoin)
+
+			Expect(err).To(BeEquivalentTo(internal.NotValidCoin))
+		})
 
 		It("should increase storedBalance inside the engine", func() {
 			engine.StoreCoins(oneUnitCoin)
