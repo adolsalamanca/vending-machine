@@ -25,6 +25,8 @@ type CashEngine struct {
 	validCoins            []string
 }
 
+// NewCashEngine instantiates a CashEngine given all the validCoins passed as parameters
+// The list of valid coins is ordered having the bigger coins first
 func NewCashEngine(validCoins ...string) *CashEngine {
 	storedCashDetailed := make(map[string]int)
 	for _, c := range validCoins {
@@ -72,6 +74,7 @@ func isNotValid(c Coin, validCoins []string) bool {
 	return true
 }
 
+// DropCoins returns the money back to the customer
 func (e *CashEngine) DropCoins() []Coin {
 	serviceCoins := e.currentServiceCoins
 	e.currentServiceCoins = nil
@@ -80,13 +83,20 @@ func (e *CashEngine) DropCoins() []Coin {
 	return serviceCoins
 }
 
-// StoreCoins method is used to fill the machine with coins to let the vending machine have money to give exchange back
+// StoreCoins method is used to fill the machine with coins so there is money to give exchange back if needed
 func (e *CashEngine) StoreCoins(coins ...Coin) {
 	for _, c := range coins {
 		e.coinsForExchange[c.category] += 1
 	}
 }
 
+// LoadCoins method is used to fill the machine with coins to let the vending machine have money to give exchange back
+// Similar to the previous method, duplicated for the shake of simplicity
+func (e *CashEngine) LoadCoins(coin Coin, amount int) {
+	e.coinsForExchange[coin.category] += amount
+}
+
+// The method that performs the calculation to verify if the money is just exact or if there is some exchange back.
 func (e *CashEngine) SellItem(price decimal.Decimal) ([]Coin, error) {
 	if price.GreaterThan(e.currentServiceBalance) {
 		return []Coin{}, NotEnoughCoinsErr
