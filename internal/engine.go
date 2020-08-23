@@ -19,8 +19,8 @@ func (e Error) Error() string {
 }
 
 type CashEngine struct {
-	storedCashDetailed    map[string]int
-	currentServiceCash    []Coin
+	coinsForExchange      map[string]int
+	currentServiceCoins   []Coin
 	currentServiceBalance decimal.Decimal
 	validCoins            []string
 }
@@ -34,8 +34,8 @@ func NewCashEngine(validCoins ...string) *CashEngine {
 	sort.Sort(sort.Reverse(sort.StringSlice(validCoins)))
 
 	return &CashEngine{
-		storedCashDetailed:    storedCashDetailed,
-		currentServiceCash:    nil,
+		coinsForExchange:      storedCashDetailed,
+		currentServiceCoins:   nil,
 		currentServiceBalance: decimal.Decimal{},
 		validCoins:            validCoins,
 	}
@@ -52,7 +52,7 @@ func (e *CashEngine) InsertCoins(coins ...string) error {
 		if isNotValid(newCoin, e.validCoins) {
 			return NotValidCoinAmount
 		}
-		e.currentServiceCash = append(e.currentServiceCash, newCoin)
+		e.currentServiceCoins = append(e.currentServiceCoins, newCoin)
 		e.currentServiceBalance = e.currentServiceBalance.Add(newCoin.value)
 	}
 
@@ -73,8 +73,8 @@ func isNotValid(c Coin, validCoins []string) bool {
 }
 
 func (e *CashEngine) DropCoins() []Coin {
-	serviceCoins := e.currentServiceCash
-	e.currentServiceCash = nil
+	serviceCoins := e.currentServiceCoins
+	e.currentServiceCoins = nil
 	e.currentServiceBalance = decimal.Decimal{}
 
 	return serviceCoins
@@ -83,7 +83,7 @@ func (e *CashEngine) DropCoins() []Coin {
 // StoreCoins method is used to fill the machine with coins to let the vending machine have money to give exchange back
 func (e *CashEngine) StoreCoins(coins ...Coin) {
 	for _, c := range coins {
-		e.storedCashDetailed[c.category] += 1
+		e.coinsForExchange[c.category] += 1
 	}
 }
 
@@ -111,43 +111,43 @@ func (e *CashEngine) SellItem(price decimal.Decimal) ([]Coin, error) {
 
 		if difference.Mod(validCoinValue).Equal(decimal.Zero) {
 			neededCoins := int(difference.Div(validCoinValue).IntPart())
-			if e.storedCashDetailed[currentCoin] >= neededCoins {
+			if e.coinsForExchange[currentCoin] >= neededCoins {
 				for i := 0; i < neededCoins; i++ {
 					exchange = append(exchange, coinReturned)
-					e.storedCashDetailed[currentCoin]--
+					e.coinsForExchange[currentCoin]--
 				}
 
 				e.currentServiceBalance = decimal.Zero
-				e.currentServiceCash = nil
+				e.currentServiceCoins = nil
 				return exchange, nil
 			}
 
-			difference = difference.Sub(validCoinValue.Mul(decimal.NewFromInt(int64(e.storedCashDetailed[currentCoin]))))
-			for i := 0; i < e.storedCashDetailed[currentCoin]; i++ {
+			difference = difference.Sub(validCoinValue.Mul(decimal.NewFromInt(int64(e.coinsForExchange[currentCoin]))))
+			for i := 0; i < e.coinsForExchange[currentCoin]; i++ {
 				exchange = append(exchange, coinReturned)
-				e.storedCashDetailed[currentCoin]--
+				e.coinsForExchange[currentCoin]--
 			}
 
 		} else {
 			var usedCoins int
 			neededCoins := int(difference.Div(validCoinValue).IntPart())
-			if e.storedCashDetailed[currentCoin] >= neededCoins {
+			if e.coinsForExchange[currentCoin] >= neededCoins {
 				usedCoins = neededCoins
 			} else {
-				usedCoins = e.storedCashDetailed[currentCoin]
+				usedCoins = e.coinsForExchange[currentCoin]
 			}
 
 			difference = difference.Sub(validCoinValue.Mul(decimal.NewFromInt(int64(usedCoins))))
 			for i := 0; i < usedCoins; i++ {
 				exchange = append(exchange, coinReturned)
-				e.storedCashDetailed[currentCoin]--
+				e.coinsForExchange[currentCoin]--
 			}
 		}
 	}
 
 	if difference.Equal(decimal.Zero) {
 		e.currentServiceBalance = decimal.Zero
-		e.currentServiceCash = nil
+		e.currentServiceCoins = nil
 		return exchange, nil
 	}
 
