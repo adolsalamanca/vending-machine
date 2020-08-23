@@ -63,8 +63,16 @@ func (e *CashEngine) StoreCoins(coins ...Coin) {
 	}
 }
 
-func (e *CashEngine) GetBalance() decimal.Decimal {
-	return e.storedBalance
+func (e *CashEngine) GetBalance() (decimal.Decimal, error) {
+	balance := decimal.Zero
+	for k, v := range e.storedCashDetailed {
+		coinsValue, err := decimal.NewFromString(k)
+		if err != nil {
+			return decimal.Decimal{}, err
+		}
+		balance = balance.Add(coinsValue.Mul(decimal.NewFromInt(int64(v))))
+	}
+	return balance, nil
 }
 
 func (e *CashEngine) GetPaid(price decimal.Decimal) ([]Coin, error) {
