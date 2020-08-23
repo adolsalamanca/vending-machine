@@ -5,10 +5,10 @@ import "github.com/shopspring/decimal"
 const (
 	NotValidCoin   = Error("Not valid coin inserted")
 	FiveCent       = "0.05"
-	TenCent        = "0.10"
+	TenCent        = "0.1"
 	TwentyFiveCent = "0.25"
-	OneUnit        = "1.00"
-	TwoUnit        = "2.00"
+	OneUnit        = "1"
+	TwoUnit        = "2"
 )
 
 type Coin struct {
